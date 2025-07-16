@@ -9,17 +9,16 @@ import lombok.Setter;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity(name = "customer-order")
+@Entity(name = "order-status")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderStatus {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "status-id",unique = true,nullable = false,length = 80)
     private String statusId;
-    @Column(name = "status",nullable = false,length = 80)
+    @Column(name = "status",nullable = false,length = 80,unique = true)
     private String status;
     @OneToMany(mappedBy = "orderStatus")
     private Set<CustomerOrder> customerOrders = new HashSet<>();

@@ -17,7 +17,6 @@ import java.util.Set;
 @NoArgsConstructor
 public class CustomerOrder {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "order-id",unique = true,nullable = false,length = 80)
     private String orderId;
     @Column(name = "order-date",nullable = false,columnDefinition = "DATETIME")
@@ -33,4 +32,6 @@ public class CustomerOrder {
     @ManyToOne
     @JoinColumn(name = "order_status_id")
     private OrderStatus orderStatus;
+
+
 }

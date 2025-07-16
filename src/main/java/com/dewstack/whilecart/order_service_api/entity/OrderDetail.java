@@ -1,21 +1,16 @@
 package com.dewstack.whilecart.order_service_api.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.util.Date;
+import lombok.*;
 
 @Entity(name = "customer-order")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class OrderDetail {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "detail-id",unique = true,nullable = false,length = 80)
     private String detailId;
     @Column(name = "product-id",nullable = false,length = 80)

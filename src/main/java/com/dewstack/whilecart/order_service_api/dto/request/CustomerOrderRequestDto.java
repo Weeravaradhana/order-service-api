@@ -16,5 +16,5 @@ public class CustomerOrderRequestDto {
     private double totalAmount;
     private String userId;
     private String remark;
-    private ArrayList<CustomerOrderDetailRequestDto> OrderDetails;
+    private ArrayList<OrderDetailRequestDto> OrderDetails;
 }
