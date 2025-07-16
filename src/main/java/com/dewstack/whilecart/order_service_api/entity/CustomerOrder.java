@@ -30,4 +30,7 @@ public class CustomerOrder {
     private String remark;
     @OneToMany(mappedBy = "customerOrder")
     private Set<OrderDetail> orderDetails = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "status_id")
+    private OrderStatus orderStatus;
 }
