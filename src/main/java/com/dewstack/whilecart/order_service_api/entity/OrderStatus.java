@@ -19,7 +19,7 @@ public class OrderStatus {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "status-id",unique = true,nullable = false,length = 80)
     private String statusId;
-    @Column(name = "status",nullable = false,length = 45)
+    @Column(name = "status",nullable = false,length = 80)
     private String status;
     @OneToMany(mappedBy = "orderStatus")
     private Set<CustomerOrder> customerOrders = new HashSet<>();
