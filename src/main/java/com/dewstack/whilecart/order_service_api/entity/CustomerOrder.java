@@ -31,6 +31,6 @@ public class CustomerOrder {
     @OneToMany(mappedBy = "customerOrder")
     private Set<OrderDetail> orderDetails = new HashSet<>();
     @ManyToOne
-    @JoinColumn(name = "status_id")
+    @JoinColumn(name = "order_status_id")
     private OrderStatus orderStatus;
 }
