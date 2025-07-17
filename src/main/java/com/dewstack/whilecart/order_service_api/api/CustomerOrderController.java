@@ -59,7 +59,7 @@ public class CustomerOrderController {
     }
 
     @PutMapping("/business/update-status/{id}")
-    public ResponseEntity<StandardResponseDto> manageStatus (@RequestParam String status,@PathVariable String id) {
+    public ResponseEntity<StandardResponseDt> manageStatus (@RequestParam String status,@PathVariable String id) {
         customerOrderService.manageStatus(status,id);
 
         return new ResponseEntity<>(
