@@ -4,14 +4,18 @@ import com.dewstack.whilecart.order_service_api.dto.request.CustomerOrderRequest
 import com.dewstack.whilecart.order_service_api.dto.request.OrderDetailRequestDto;
 import com.dewstack.whilecart.order_service_api.dto.response.CustomerOrderResponseDto;
 import com.dewstack.whilecart.order_service_api.dto.response.OrderDetailResponseDto;
+import com.dewstack.whilecart.order_service_api.dto.response.paginate.CustomerOrderPaginateDto;
 import com.dewstack.whilecart.order_service_api.entity.CustomerOrder;
 import com.dewstack.whilecart.order_service_api.entity.OrderDetail;
 import com.dewstack.whilecart.order_service_api.repo.CustomerOrderRepo;
 import com.dewstack.whilecart.order_service_api.repo.OrderStatusRepo;
 import com.dewstack.whilecart.order_service_api.service.CustomerOrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -50,6 +54,16 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
                 .orElseThrow(()-> new RuntimeException(String.format("Order Id %s not found", orderId)));
         orderRepo.delete(customerOrder);
     }
+
+    @Override
+    public CustomerOrderPaginateDto searchAll(String text, int page, int pageSize) {
+        return CustomerOrderPaginateDto
+                .builder()
+                .count(orderRepo.searchCount(text))
+                .ordersDetails(orderRepo.searchAll(text, PageRequest.of(page,pageSize)).stream().map(this::toCustomerOrderResponseDto).collect(Collectors.toList()))
+                .build();
+    }
+
 
     private CustomerOrderResponseDto toCustomerOrderResponseDto(CustomerOrder customerOrder) {
         if(customerOrder == null){
