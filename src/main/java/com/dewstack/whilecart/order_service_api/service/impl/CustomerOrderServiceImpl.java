@@ -8,6 +8,7 @@ import com.dewstack.whilecart.order_service_api.dto.response.paginate.CustomerOr
 import com.dewstack.whilecart.order_service_api.entity.CustomerOrder;
 import com.dewstack.whilecart.order_service_api.entity.OrderDetail;
 import com.dewstack.whilecart.order_service_api.entity.OrderStatus;
+import com.dewstack.whilecart.order_service_api.exception.EntryNotFoundException;
 import com.dewstack.whilecart.order_service_api.repo.CustomerOrderRepo;
 import com.dewstack.whilecart.order_service_api.repo.OrderStatusRepo;
 import com.dewstack.whilecart.order_service_api.service.CustomerOrderService;
@@ -38,7 +39,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
                 .collect(Collectors.toSet()));
         customerOrder.setOrderStatus(statusRepo
                 .findByStatus("PENDING")
-                .orElseThrow(()-> new RuntimeException("Order Status Not Found.so you can place  an order or please contact admin"))
+                .orElseThrow(()-> new EntryNotFoundException("Order Status Not Found.so you can place  an order or please contact admin"))
         );
         orderRepo.save(customerOrder);
 
@@ -48,7 +49,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     public void updateOrder(CustomerOrderRequestDto requestDto, String orderId) {
         CustomerOrder customerOrder = orderRepo
                 .findById(orderId)
-                .orElseThrow(()-> new RuntimeException(String.format("Order Id %s not found", orderId)));
+                .orElseThrow(()-> new EntryNotFoundException(String.format("Order Id %s not found", orderId)));
         customerOrder.setOrderDate(requestDto.getOrderDate());
         customerOrder.setTotalAmount(requestDto.getTotalAmount());
         orderRepo.save(customerOrder);
@@ -58,7 +59,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     public void manageRemark(String remark, String orderId) {
         CustomerOrder customerOrder = orderRepo
                 .findById(orderId)
-                .orElseThrow(()-> new RuntimeException(String.format("Order Id %s not found", orderId)));
+                .orElseThrow(()-> new EntryNotFoundException(String.format("Order Id %s not found", orderId)));
         customerOrder.setRemark(remark);
         orderRepo.save(customerOrder);
     }
@@ -67,10 +68,10 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     public void manageStatus(String status, String orderId) {
         CustomerOrder customerOrder = orderRepo
                 .findById(orderId)
-                .orElseThrow(()-> new RuntimeException(String.format("Order Id %s not found", orderId)));
+                .orElseThrow(()-> new EntryNotFoundException(String.format("Order Id %s not found", orderId)));
         OrderStatus orderStatus = statusRepo
                 .findByStatus(status)
-                .orElseThrow(() -> new RuntimeException("Order Status Not Found.so you can place  an order or please contact admin"));
+                .orElseThrow(() -> new EntryNotFoundException("Order Status Not Found.so you can place  an order or please contact admin"));
         customerOrder.setOrderStatus(orderStatus);
         orderRepo.save(customerOrder);
     }
@@ -78,7 +79,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     @Override
     public CustomerOrderResponseDto findOrderById(String orderId) {
        CustomerOrder customerOrder = orderRepo.findById(orderId)
-               .orElseThrow(()-> new RuntimeException(String.format("Order Id %s not found", orderId)));
+               .orElseThrow(()-> new EntryNotFoundException(String.format("Order Id %s not found", orderId)));
         return toCustomerOrderResponseDto(customerOrder);
 
     }
@@ -86,7 +87,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     @Override
     public void deleteById(String orderId) {
         CustomerOrder customerOrder = orderRepo.findById(orderId)
-                .orElseThrow(()-> new RuntimeException(String.format("Order Id %s not found", orderId)));
+                .orElseThrow(()-> new EntryNotFoundException(String.format("Order Id %s not found", orderId)));
         orderRepo.delete(customerOrder);
     }
 
