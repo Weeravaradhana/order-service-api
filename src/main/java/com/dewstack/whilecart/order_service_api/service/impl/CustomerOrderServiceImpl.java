@@ -7,15 +7,13 @@ import com.dewstack.whilecart.order_service_api.dto.response.OrderDetailResponse
 import com.dewstack.whilecart.order_service_api.dto.response.paginate.CustomerOrderPaginateDto;
 import com.dewstack.whilecart.order_service_api.entity.CustomerOrder;
 import com.dewstack.whilecart.order_service_api.entity.OrderDetail;
+import com.dewstack.whilecart.order_service_api.entity.OrderStatus;
 import com.dewstack.whilecart.order_service_api.repo.CustomerOrderRepo;
 import com.dewstack.whilecart.order_service_api.repo.OrderStatusRepo;
 import com.dewstack.whilecart.order_service_api.service.CustomerOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -38,6 +36,35 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         customerOrder.setOrderStatus(statusRepo.findByStatus("PENDING").orElseThrow(()-> new RuntimeException("Order Status Not Found.so you can place  an order or please contact admin")));
         orderRepo.save(customerOrder);
 
+    }
+
+    @Override
+    public void updateOrder(CustomerOrderRequestDto requestDto, String orderId) {
+        CustomerOrder customerOrder = orderRepo.findById(orderId)
+                .orElseThrow(()-> new RuntimeException(String.format("Order Id %s not found", orderId)));
+
+        customerOrder.setOrderDate(requestDto.getOrderDate());
+        customerOrder.setTotalAmount(requestDto.getTotalAmount());
+        orderRepo.save(customerOrder);
+    }
+
+    @Override
+    public void manageRemark(String remark, String orderId) {
+        CustomerOrder customerOrder = orderRepo.findById(orderId)
+                .orElseThrow(()-> new RuntimeException(String.format("Order Id %s not found", orderId)));
+        customerOrder.setRemark(remark);
+        orderRepo.save(customerOrder);
+    }
+
+    @Override
+    public void manageStatus(String status, String orderId) {
+        CustomerOrder customerOrder = orderRepo.findById(orderId)
+                .orElseThrow(()-> new RuntimeException(String.format("Order Id %s not found", orderId)));
+        OrderStatus orderStatus = statusRepo.findByStatus(status).orElseThrow(() -> new RuntimeException("Order Status Not Found.so you can place  an order or please contact admin"));
+
+
+        customerOrder.setOrderStatus(orderStatus);
+        orderRepo.save(customerOrder);
     }
 
     @Override
