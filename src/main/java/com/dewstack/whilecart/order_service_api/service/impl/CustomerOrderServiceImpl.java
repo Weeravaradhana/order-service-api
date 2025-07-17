@@ -32,17 +32,23 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         customerOrder.setRemark(" ");
         customerOrder.setTotalAmount(requestDto.getTotalAmount());
         customerOrder.setUserId(requestDto.getUserId());
-        customerOrder.setOrderDetails(requestDto.getOrderDetails().stream().map(e->createOrderDetail(e,customerOrder)).collect(Collectors.toSet()));
-        customerOrder.setOrderStatus(statusRepo.findByStatus("PENDING").orElseThrow(()-> new RuntimeException("Order Status Not Found.so you can place  an order or please contact admin")));
+        customerOrder.setOrderDetails(requestDto.getOrderDetails()
+                .stream()
+                .map(e->createOrderDetail(e,customerOrder))
+                .collect(Collectors.toSet()));
+        customerOrder.setOrderStatus(statusRepo
+                .findByStatus("PENDING")
+                .orElseThrow(()-> new RuntimeException("Order Status Not Found.so you can place  an order or please contact admin"))
+        );
         orderRepo.save(customerOrder);
 
     }
 
     @Override
     public void updateOrder(CustomerOrderRequestDto requestDto, String orderId) {
-        CustomerOrder customerOrder = orderRepo.findById(orderId)
+        CustomerOrder customerOrder = orderRepo
+                .findById(orderId)
                 .orElseThrow(()-> new RuntimeException(String.format("Order Id %s not found", orderId)));
-
         customerOrder.setOrderDate(requestDto.getOrderDate());
         customerOrder.setTotalAmount(requestDto.getTotalAmount());
         orderRepo.save(customerOrder);
@@ -50,7 +56,8 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
     @Override
     public void manageRemark(String remark, String orderId) {
-        CustomerOrder customerOrder = orderRepo.findById(orderId)
+        CustomerOrder customerOrder = orderRepo
+                .findById(orderId)
                 .orElseThrow(()-> new RuntimeException(String.format("Order Id %s not found", orderId)));
         customerOrder.setRemark(remark);
         orderRepo.save(customerOrder);
@@ -58,11 +65,12 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
     @Override
     public void manageStatus(String status, String orderId) {
-        CustomerOrder customerOrder = orderRepo.findById(orderId)
+        CustomerOrder customerOrder = orderRepo
+                .findById(orderId)
                 .orElseThrow(()-> new RuntimeException(String.format("Order Id %s not found", orderId)));
-        OrderStatus orderStatus = statusRepo.findByStatus(status).orElseThrow(() -> new RuntimeException("Order Status Not Found.so you can place  an order or please contact admin"));
-
-
+        OrderStatus orderStatus = statusRepo
+                .findByStatus(status)
+                .orElseThrow(() -> new RuntimeException("Order Status Not Found.so you can place  an order or please contact admin"));
         customerOrder.setOrderStatus(orderStatus);
         orderRepo.save(customerOrder);
     }
@@ -87,7 +95,8 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         return CustomerOrderPaginateDto
                 .builder()
                 .count(orderRepo.searchCount(text))
-                .ordersDetails(orderRepo.searchAll(text, PageRequest.of(page,pageSize)).stream().map(this::toCustomerOrderResponseDto).collect(Collectors.toList()))
+                .ordersDetails(orderRepo.searchAll(text, PageRequest.of(page,pageSize))
+                        .stream().map(this::toCustomerOrderResponseDto).collect(Collectors.toList()))
                 .build();
     }
 
@@ -102,7 +111,10 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
                 .orderDate(customerOrder.getOrderDate())
                 .userId(customerOrder.getUserId())
                 .totalAmount(customerOrder.getTotalAmount())
-                .OrderDetails(customerOrder.getOrderDetails().stream().map(this::toOrderDetailResponseDto).collect(Collectors.toList()))
+                .OrderDetails(customerOrder.getOrderDetails()
+                        .stream()
+                        .map(this::toOrderDetailResponseDto)
+                        .collect(Collectors.toList()))
                 .remark(customerOrder.getRemark())
                 .status(customerOrder.getOrderStatus().getStatus())
                 .build();
