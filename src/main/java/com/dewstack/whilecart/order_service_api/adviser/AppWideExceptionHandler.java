@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class AppWideExceptionHandler {
     @ExceptionHandler(EntryNotFoundException.class)
-    public ResponseEntity<StandardResponseDto> handleEntryNotFoundException(EntryNotFoundException e) {
+    public ResponseEntity<StandardResponseDto> handleEntryNotFoundExceptio(EntryNotFoundException e) {
         return new  ResponseEntity<>(
                   new StandardResponseDto(
                           404,e.getMessage(),e
