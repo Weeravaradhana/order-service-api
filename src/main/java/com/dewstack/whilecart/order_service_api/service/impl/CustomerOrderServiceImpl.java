@@ -2,9 +2,10 @@ package com.dewstack.whilecart.order_service_api.service.impl;
 
 import com.dewstack.whilecart.order_service_api.dto.request.CustomerOrderRequestDto;
 import com.dewstack.whilecart.order_service_api.dto.request.OrderDetailRequestDto;
+import com.dewstack.whilecart.order_service_api.dto.response.CustomerOrderResponseDto;
+import com.dewstack.whilecart.order_service_api.dto.response.OrderDetailResponseDto;
 import com.dewstack.whilecart.order_service_api.entity.CustomerOrder;
 import com.dewstack.whilecart.order_service_api.entity.OrderDetail;
-import com.dewstack.whilecart.order_service_api.entity.OrderStatus;
 import com.dewstack.whilecart.order_service_api.repo.CustomerOrderRepo;
 import com.dewstack.whilecart.order_service_api.repo.OrderStatusRepo;
 import com.dewstack.whilecart.order_service_api.service.CustomerOrderService;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 public class CustomerOrderServiceImpl implements CustomerOrderService {
     private final CustomerOrderRepo orderRepo;
     private final OrderStatusRepo statusRepo;
+
     @Override
     public void createOrder(CustomerOrderRequestDto requestDto) {
 
@@ -32,6 +34,44 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         customerOrder.setOrderStatus(statusRepo.findByStatus("PENDING").orElseThrow(()-> new RuntimeException("Order Status Not Found.so you can place  an order or please contact admin")));
         orderRepo.save(customerOrder);
 
+    }
+
+    @Override
+    public CustomerOrderResponseDto findOrderById(String orderId) {
+       CustomerOrder customerOrder = orderRepo.findById(orderId)
+               .orElseThrow(()-> new RuntimeException(String.format("Order Id %s not found", orderId)));
+        return toCustomerOrderResponseDto(customerOrder);
+
+    }
+
+    private CustomerOrderResponseDto toCustomerOrderResponseDto(CustomerOrder customerOrder) {
+        if(customerOrder == null){
+            return null;
+
+        }
+        return CustomerOrderResponseDto.builder()
+                .orderId(customerOrder.getOrderId())
+                .orderDate(customerOrder.getOrderDate())
+                .userId(customerOrder.getUserId())
+                .totalAmount(customerOrder.getTotalAmount())
+                .OrderDetails(customerOrder.getOrderDetails().stream().map(this::toOrderDetailResponseDto).collect(Collectors.toList()))
+                .remark(customerOrder.getRemark())
+                .status(customerOrder.getOrderStatus().getStatus())
+                .build();
+    }
+
+    private OrderDetailResponseDto toOrderDetailResponseDto(OrderDetail orderDetail) {
+        if(orderDetail == null){
+            return null;
+        }
+
+       return OrderDetailResponseDto.builder()
+               .detailId(orderDetail.getDetailId())
+               .productId(orderDetail.getProductId())
+               .qty(orderDetail.getQty())
+               .unitPrice(orderDetail.getUnitPrice())
+               .discount(orderDetail.getDiscount())
+               .build();
     }
 
     private OrderDetail createOrderDetail(OrderDetailRequestDto requestDto, CustomerOrder order) {
