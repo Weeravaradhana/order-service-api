@@ -44,6 +44,13 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 
     }
 
+    @Override
+    public void deleteById(String orderId) {
+        CustomerOrder customerOrder = orderRepo.findById(orderId)
+                .orElseThrow(()-> new RuntimeException(String.format("Order Id %s not found", orderId)));
+        orderRepo.delete(customerOrder);
+    }
+
     private CustomerOrderResponseDto toCustomerOrderResponseDto(CustomerOrder customerOrder) {
         if(customerOrder == null){
             return null;
