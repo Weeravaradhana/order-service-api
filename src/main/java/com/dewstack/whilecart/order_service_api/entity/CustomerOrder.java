@@ -1,11 +1,11 @@
 package com.dewstack.whilecart.order_service_api.entity;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,7 +21,7 @@ public class CustomerOrder {
     private String orderId;
     @Column(name = "order-date",nullable = false,columnDefinition = "DATETIME")
     private Date orderDate;
-    @Column(name="total-amount",nullable = false,precision=10,scale=2)
+    @Column(name="total-amount",nullable = false)
     private double totalAmount;
     @Column(name = "user-id",nullable = false,length = 80)
     private String userId;
