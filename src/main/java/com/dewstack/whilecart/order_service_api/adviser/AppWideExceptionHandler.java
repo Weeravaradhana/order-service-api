@@ -14,7 +14,7 @@ public class AppWideExceptionHandler {
         return new  ResponseEntity<>(
                   new StandardResponseDto(
                           404,e.getMessage(),e
-                  ),HttpStatus.NOT_FOUND
+                  ),HttpStatus.NOT_FOUN
                 );
     }
 }
